@@ -4,8 +4,10 @@ import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.sumbul.nework.di.AppDb
+import ru.sumbul.nework.error.ApiError
 import ru.sumbul.nework.events.data.EventsRemoteMediator
 import ru.sumbul.nework.events.data.entity.EventResponseEntity
+import ru.sumbul.nework.events.domain.model.EventResponse
 import ru.sumbul.nework.events.domain.model.Media
 import ru.sumbul.nework.posts.data.entity.PostResponseEntity
 import ru.sumbul.nework.posts.data.local.PostsDao
@@ -47,8 +49,20 @@ class PostRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getEventById(id: Long): PostResponse {
-        TODO("Not yet implemented")
+    override suspend fun getPostById(id: Long): PostResponse {
+        var post : PostResponse
+        try {
+            val response = api.getById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            //  dao.upsert(body)
+            post = body
+        } catch (e: Exception) {
+            post = postDao.getPostById(id).toDto()
+        }
+        return post
     }
 
     override suspend fun removeById(id: Long) {

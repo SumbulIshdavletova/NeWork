@@ -50,7 +50,7 @@ class EventsViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
 
-    val data: Flow<PagingData<EventResponse>> = repository.data
+    val data: Flow<PagingData<EventResponse>> = cached
 
     private val _photo = MutableLiveData(noPhoto)
     val photo: LiveData<PhotoModel>

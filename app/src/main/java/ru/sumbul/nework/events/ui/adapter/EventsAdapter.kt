@@ -13,11 +13,9 @@ import ru.sumbul.nework.util.load
 interface OnInteractionListener {
     fun onClick(event: EventResponse) {}
     fun onLike(event: EventResponse) {}
-
     //  fun onDeleteLike(event: EventResponse)
     fun onEdit(event: EventResponse) {}
     fun onRemove(event: EventResponse) {}
-    fun onFullImage(event: EventResponse) {}
 }
 
 class EventsAdapter(

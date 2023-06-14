@@ -14,7 +14,7 @@ interface PostRepository {
     suspend fun getAll()
     fun getNewerCount(id: Long): Flow<Int>
     suspend fun save(event: PostCreate)
-    suspend fun getEventById(id: Long) : PostResponse
+    suspend fun getPostById(id: Long) : PostResponse
 
     suspend fun removeById(id: Long)
     suspend fun likeById(id: Long)

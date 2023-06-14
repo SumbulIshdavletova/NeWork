@@ -34,18 +34,18 @@ interface EventsDao {
     @Query("SELECT COUNT(*)  FROM EventResponseEntity")
     suspend fun count(): Int
 
-    @Query("DELETE FROM EventResponseEntity WHERE id = :id")
-    suspend fun removeById(id: Long)
-
-    @Query(
-        """
-        UPDATE EventResponseEntity SET
-        likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
-        WHERE id = :id
-        """
-    )
-    suspend fun likeById(id: Long)
-
+//    @Query("DELETE FROM EventResponseEntity WHERE id = :id")
+//    suspend fun removeById(id: Long)
+//
+//    @Query(
+//        """
+//        UPDATE EventResponseEntity SET
+//        likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
+//        WHERE id = :id
+//        """
+//    )
+//    suspend fun likeById(id: Long)
+// просто писать что не работае без интернета
 //    @Query("UPDATE EventResponseEntity SET show = 1 WHERE show = 0")
 //    suspend fun update()
 

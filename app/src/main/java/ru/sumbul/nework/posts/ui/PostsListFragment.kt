@@ -5,56 +5,81 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.sumbul.nework.R
+import ru.sumbul.nework.databinding.FragmentPostsListBinding
+import ru.sumbul.nework.events.domain.model.EventResponse
+import ru.sumbul.nework.events.ui.EventFragment.Companion.textArg
+import ru.sumbul.nework.events.ui.adapter.EventsAdapter
+import ru.sumbul.nework.events.ui.adapter.OnInteractionListener
+import ru.sumbul.nework.posts.domain.model.PostResponse
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PostsListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class PostsListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+    private val viewModel: PostViewModel by activityViewModels()
+
+    private val adapter by lazy(LazyThreadSafetyMode.NONE) {
+        PostsAdapter(object : PostOnInteractionListener {
+            override fun onClick(post: PostResponse) {
+                findNavController().navigate(
+                    R.id.action_eventsListFragment_to_eventFragment,
+                    Bundle().apply {
+                        textArg = post.id.toString()
+                    })
+            }
+        })
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_posts_list, container, false)
+    ): View {
+        val binding = FragmentPostsListBinding.inflate(inflater, container, false)
+
+        binding.list.adapter = adapter
+        lifecycleScope.launch {
+            viewModel.data.collectLatest {
+                adapter.submitData(it)
+            }
+        }
+
+        viewModel.dataState.observe(viewLifecycleOwner) { state ->
+            binding.progress.isVisible = state.loading
+            binding.swiperefresh.isRefreshing = state.refreshing
+        }
+
+
+        binding.swiperefresh.setOnRefreshListener(adapter::refresh)
+
+        binding.fab.setOnClickListener {
+            context?.let { it1 ->
+                MaterialAlertDialogBuilder(
+                    it1,
+                    R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
+                )
+                    .setMessage(resources.getString(R.string.alert_dialog))
+//                            .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
+//                                findNavController().navigate(R.id.action_feedFragment_to_singInFragment)
+//                            }
+                    .show()
+            }
+        }
+
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PostsListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PostsListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
