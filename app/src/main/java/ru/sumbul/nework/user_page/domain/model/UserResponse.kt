@@ -1,4 +1,4 @@
-package ru.sumbul.nework.user_page.data.entity
+package ru.sumbul.nework.user_page.domain.model
 
 data class UserResponse(
     val id: Int,

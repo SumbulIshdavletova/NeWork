@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,13 +29,14 @@ import ru.sumbul.nework.posts.domain.model.PostResponse
 class PostsListFragment : Fragment() {
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val viewModel: PostViewModel by activityViewModels()
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         PostsAdapter(object : PostOnInteractionListener {
             override fun onClick(post: PostResponse) {
                 findNavController().navigate(
-                    R.id.action_eventsListFragment_to_eventFragment,
+                    R.id.action_postsListFragment_to_postFragment,
                     Bundle().apply {
                         textArg = post.id.toString()
                     })
@@ -63,6 +65,16 @@ class PostsListFragment : Fragment() {
 
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)
+
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest { state ->
+                binding.swiperefresh.isRefreshing =
+                    state.refresh is LoadState.Loading
+//                            state.prepend is LoadState.Loading ||
+//                            state.append is LoadState.Loading
+            }
+        }
+
 
         binding.fab.setOnClickListener {
             context?.let { it1 ->

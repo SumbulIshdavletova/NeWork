@@ -12,6 +12,7 @@ import retrofit2.create
 import ru.sumbul.nework.BuildConfig
 import ru.sumbul.nework.events.data.remote.EventsApi
 import ru.sumbul.nework.posts.data.remote.PostApi
+import ru.sumbul.nework.user_page.data.remote.UserPageApi
 import javax.inject.Singleton
 
 
@@ -69,4 +70,8 @@ class ApiModule {
     @Singleton
     @Provides
     fun providePostsApi(retrofit: Retrofit): PostApi = retrofit.create()
+
+    @Singleton
+    @Provides
+    fun providesPageUserApi(retrofit: Retrofit): UserPageApi = retrofit.create()
 }

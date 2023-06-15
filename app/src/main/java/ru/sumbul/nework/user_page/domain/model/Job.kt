@@ -1,4 +1,4 @@
-package ru.sumbul.nework.util
+package ru.sumbul.nework.user_page.domain.model
 
 
 data class Job(

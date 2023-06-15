@@ -39,6 +39,14 @@
         <action
             android:id="@+id/action_postsListFragment_to_eventsListFragment"
             app:destination="@id/eventsListFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_postFragment"
+            app:destination="@id/postFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="ru.sumbul.nework.posts.ui.PostFragment"
+        android:label="fragment_post"
+        tools:layout="@layout/fragment_post" />
 
 </navigation>
