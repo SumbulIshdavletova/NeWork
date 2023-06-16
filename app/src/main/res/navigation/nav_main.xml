@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_eventsListFragment_to_eventFragment"
             app:destination="@id/eventFragment" />
+        <action
+            android:id="@+id/action_eventsListFragment_to_userPageFragment"
+            app:destination="@id/userPageFragment" />
     </fragment>
 
     <fragment
@@ -29,7 +32,11 @@
         android:id="@+id/eventFragment"
         android:name="ru.sumbul.nework.events.ui.EventFragment"
         android:label="fragment_event"
-        tools:layout="@layout/fragment_event" />
+        tools:layout="@layout/fragment_event" >
+        <action
+            android:id="@+id/action_eventFragment_to_userPageFragment"
+            app:destination="@id/userPageFragment" />
+    </fragment>
 
 
     <fragment
@@ -42,11 +49,23 @@
         <action
             android:id="@+id/action_postsListFragment_to_postFragment"
             app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_userPageFragment"
+            app:destination="@id/userPageFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
         android:name="ru.sumbul.nework.posts.ui.PostFragment"
         android:label="fragment_post"
-        tools:layout="@layout/fragment_post" />
+        tools:layout="@layout/fragment_post" >
+        <action
+            android:id="@+id/action_postFragment_to_userPageFragment"
+            app:destination="@id/userPageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userPageFragment"
+        android:name="ru.sumbul.nework.user_page.ui.UserPageFragment"
+        android:label="fragment_user_page"
+        tools:layout="@layout/fragment_user_page" />
 
 </navigation>

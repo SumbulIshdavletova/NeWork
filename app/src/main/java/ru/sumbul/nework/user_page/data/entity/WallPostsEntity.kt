@@ -2,6 +2,7 @@ package ru.sumbul.nework.user_page.data.entity
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import ru.sumbul.nework.events.data.entity.AttachmentType
 import ru.sumbul.nework.posts.data.entity.PostResponseEntity
 import ru.sumbul.nework.posts.domain.model.PostCoordinates
@@ -11,6 +12,7 @@ import ru.sumbul.nework.user_page.domain.model.WallPosts
 
 @Entity
 data class WallPostsEntity(
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
     val authorId: Int,
     val author: String,

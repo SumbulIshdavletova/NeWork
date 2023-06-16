@@ -37,14 +37,14 @@ interface WallPostsDao {
     @Query("DELETE FROM WallPostRemoteKeyEntity WHERE id = :id")
     suspend fun removeById(id: Long)
 
-    @Query(
-        """
-        UPDATE WallPostRemoteKeyEntity SET
-        likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
-        WHERE id = :id
-        """
-    )
-    suspend fun likeById(id: Long)
+//    @Query(
+//        """
+//        UPDATE WallPostRemoteKeyEntity SET
+//        likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
+//        WHERE id = :id
+//        """
+//    )
+//    suspend fun likeById(id: Long)
 
 //    @Query("UPDATE PostResponseEntity SET show = 1 WHERE show = 0")
 //    suspend fun update()
