@@ -22,6 +22,7 @@ import ru.sumbul.nework.events.domain.model.EventResponse
 import ru.sumbul.nework.events.ui.EventFragment.Companion.textArg
 import ru.sumbul.nework.events.ui.adapter.EventsAdapter
 import ru.sumbul.nework.events.ui.adapter.OnInteractionListener
+import ru.sumbul.nework.posts.domain.model.PostResponse
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,6 +42,13 @@ class EventsListFragment : Fragment() {
             override fun onClick(event: EventResponse) {
                 findNavController().navigate(
                     R.id.action_eventsListFragment_to_eventFragment,
+                    Bundle().apply {
+                        textArg = event.id.toString()
+                    })
+            }
+            override fun onAuthor(event: EventResponse) {
+                findNavController().navigate(
+                    R.id.action_eventsListFragment_to_userPageFragment,
                     Bundle().apply {
                         textArg = event.id.toString()
                     })

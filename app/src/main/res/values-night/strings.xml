@@ -3,4 +3,6 @@
     <string name="events">Events</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
+    <string name="no_job_yet">The user hasn\'t added any job yet.</string>
+    <string name="no_posts_yet">The user doesn\'t have any posts yet</string>
 </resources>

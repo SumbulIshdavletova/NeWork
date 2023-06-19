@@ -11,7 +11,9 @@ import ru.sumbul.nework.util.load
 
 interface PostOnInteractionListener {
     fun onClick(post: PostResponse) {}
+    fun onAuthor(post: PostResponse) {}
     fun onLike(post: PostResponse) {}
+
     //  fun onDeleteLike(post: PostResponse)
     fun onEdit(post: PostResponse) {}
     fun onRemove(post: PostResponse) {}
@@ -51,6 +53,14 @@ class PostViewHolder(
 
         itemView.setOnClickListener {
             onInteractionListener.onClick(post)
+        }
+
+        binding.author.setOnClickListener {
+            onInteractionListener.onAuthor(post)
+        }
+
+        binding.avatar.setOnClickListener {
+            onInteractionListener.onAuthor(post)
         }
     }
 }

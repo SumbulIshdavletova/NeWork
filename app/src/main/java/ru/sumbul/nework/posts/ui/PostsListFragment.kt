@@ -41,6 +41,14 @@ class PostsListFragment : Fragment() {
                         textArg = post.id.toString()
                     })
             }
+
+            override fun onAuthor(post: PostResponse) {
+                findNavController().navigate(
+                    R.id.action_postsListFragment_to_userPageFragment,
+                    Bundle().apply {
+                        textArg = post.id.toString()
+                    })
+            }
         })
     }
 

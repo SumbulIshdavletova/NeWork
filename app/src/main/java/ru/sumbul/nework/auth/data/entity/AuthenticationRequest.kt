@@ -1,4 +1,4 @@
-package ru.sumbul.nework.util
+package ru.sumbul.nework.auth.data.entity
 
 data class AuthenticationRequest(
     val login: String,

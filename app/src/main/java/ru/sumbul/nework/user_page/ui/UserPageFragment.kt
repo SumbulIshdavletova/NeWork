@@ -22,10 +22,15 @@ import ru.sumbul.nework.user_page.ui.adapter.JobAdapter
 import ru.sumbul.nework.user_page.ui.adapter.JobOnInteractionListener
 import ru.sumbul.nework.user_page.ui.adapter.WallPostsAdapter
 import ru.sumbul.nework.user_page.ui.adapter.WallPostsOnInteractionListener
+import ru.sumbul.nework.util.StringArg
 import ru.sumbul.nework.util.load
 
 @AndroidEntryPoint
 class UserPageFragment : Fragment() {
+
+    companion object {
+        var Bundle.textArg: String? by StringArg
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val viewModel: UserPageViewModel by activityViewModels()
@@ -66,18 +71,31 @@ class UserPageFragment : Fragment() {
         binding.jobList.adapter = jobAdapter
         binding.wallList.adapter = postAdapter
 
-        viewModel.userLiveDataTransformed()?.observe(viewLifecycleOwner) { user ->
-            binding.id.text = user.id.toString()
-            user.avatar?.let { binding.avatar.load(it) }
-            binding.name.text = user.name
+        val userId = arguments?.textArg
+
+        userId?.toLong()?.let { it ->
+            viewModel.getUserById(it)
+            viewModel.userLiveDataTransformed()?.observe(viewLifecycleOwner) { user ->
+                //  arguments?.textArg?.toLong()?.let { viewModel.getUserById(it) }
+                binding.id.text = user.id.toString()
+                user.avatar?.let { binding.avatar.load(it) }
+                binding.name.text = user.name
+            }
+
         }
 
-        viewModel.getJobs()?.observe(viewLifecycleOwner) { job ->
-            jobAdapter.submitList(job)
+        userId?.toLong()?.let {
+            viewModel.getJobs(it)
+            viewModel.getJobs()?.observe(viewLifecycleOwner) { job ->
+                jobAdapter.submitList(job)
+            }
         }
 
-        viewModel.getWall()?.observe(viewLifecycleOwner) { posts ->
-            postAdapter.submitList(posts)
+        userId?.toLong()?.let {
+            viewModel.getWall(it)
+            viewModel.getWall()?.observe(viewLifecycleOwner) { posts ->
+                postAdapter.submitList(posts)
+            }
         }
 
 

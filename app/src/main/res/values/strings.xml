@@ -49,5 +49,7 @@
     <string name="alert_dialog">Sigh in before adding a new post</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_job_yet">The user hasn\'t added any job yet.</string>
+    <string name="no_posts_yet">The user doesn\'t have any posts yet</string>
 
 </resources>

@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.sumbul.nework.databinding.EventCardBinding
 import ru.sumbul.nework.events.domain.model.EventResponse
+import ru.sumbul.nework.posts.domain.model.PostResponse
 import ru.sumbul.nework.util.load
 
 
 interface OnInteractionListener {
     fun onClick(event: EventResponse) {}
+    fun onAuthor(event: EventResponse) {}
     fun onLike(event: EventResponse) {}
     //  fun onDeleteLike(event: EventResponse)
     fun onEdit(event: EventResponse) {}
@@ -53,6 +55,12 @@ class EventViewHolder(
 
         itemView.setOnClickListener {
             onInteractionListener.onClick(event)
+        }
+        binding.author.setOnClickListener {
+            onInteractionListener.onAuthor(event)
+        }
+        binding.avatar.setOnClickListener {
+            onInteractionListener.onAuthor(event)
         }
     }
 }

@@ -63,7 +63,7 @@ class UserPageViewModel @Inject constructor(
         return getUser
     }
 
-    fun getuserById(id: Long) {
+    fun getUserById(id: Long) {
         //_dataState.value = ListModelState(loading = true)
         viewModelScope.launch {
             getUser.value = repository.getUser(id)
