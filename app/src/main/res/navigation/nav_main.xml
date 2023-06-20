@@ -19,6 +19,15 @@
         <action
             android:id="@+id/action_eventsListFragment_to_userPageFragment"
             app:destination="@id/userPageFragment" />
+        <action
+            android:id="@+id/action_eventsListFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_eventsListFragment_self"
+            app:destination="@id/eventsListFragment" />
+        <action
+            android:id="@+id/action_eventsListFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
 
     <fragment
@@ -52,6 +61,15 @@
         <action
             android:id="@+id/action_postsListFragment_to_userPageFragment"
             app:destination="@id/userPageFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -67,5 +85,20 @@
         android:name="ru.sumbul.nework.user_page.ui.UserPageFragment"
         android:label="fragment_user_page"
         tools:layout="@layout/fragment_user_page" />
+    <fragment
+        android:id="@+id/newPostFragment"
+        android:name="ru.sumbul.nework.posts.ui.NewPostFragment"
+        android:label="fragment_new_post"
+        tools:layout="@layout/fragment_new_post" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="ru.sumbul.nework.auth.ui.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="ru.sumbul.nework.auth.ui.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" />
 
 </navigation>

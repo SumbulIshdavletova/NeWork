@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.sumbul.nework.auth.data.AuthRepositoryImpl
+import ru.sumbul.nework.auth.domain.AuthRepository
 import ru.sumbul.nework.events.data.EventsRepositoryImpl
 import ru.sumbul.nework.events.domain.EventsRepository
 import ru.sumbul.nework.posts.data.PostRepositoryImpl
@@ -29,5 +31,8 @@ interface RepositoryModule {
     @Singleton
     abstract fun binsUserPageRepository(impl: UserPageRepositoryImpl): UserPageRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 
 }

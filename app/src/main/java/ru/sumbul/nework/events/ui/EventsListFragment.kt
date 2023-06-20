@@ -17,6 +17,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.sumbul.nework.R
+import ru.sumbul.nework.auth.data.AppAuth
+import ru.sumbul.nework.auth.ui.AuthViewModel
 import ru.sumbul.nework.databinding.FragmentEventsListBinding
 import ru.sumbul.nework.events.domain.model.EventResponse
 import ru.sumbul.nework.events.ui.EventFragment.Companion.textArg
@@ -28,15 +30,13 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class EventsListFragment : Fragment() {
 
-//    @Inject
-//    lateinit var appAuth: AppAuth
+    @Inject
+    lateinit var appAuth: AppAuth
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val viewModel: EventsViewModel by activityViewModels()
-    // val authViewModel: AuthViewModel by viewModels()
+    val authViewModel: AuthViewModel by viewModels()
 
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         EventsAdapter(object : OnInteractionListener {
             override fun onClick(event: EventResponse) {
@@ -46,6 +46,7 @@ class EventsListFragment : Fragment() {
                         textArg = event.id.toString()
                     })
             }
+
             override fun onAuthor(event: EventResponse) {
                 findNavController().navigate(
                     R.id.action_eventsListFragment_to_userPageFragment,
@@ -113,20 +114,62 @@ class EventsListFragment : Fragment() {
             binding.updateFab.isVisible = false
         }
 
+        var menuProvider: MenuProvider? = null
+        authViewModel.data.observe(viewLifecycleOwner) {
 
-        binding.fab.setOnClickListener {
-            context?.let { it1 ->
-                MaterialAlertDialogBuilder(
-                    it1,
-                    R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
-                )
-                    .setMessage(resources.getString(R.string.alert_dialog))
-//                            .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
-//                                findNavController().navigate(R.id.action_feedFragment_to_singInFragment)
-//                            }
-                    .show()
+            binding.fab.setOnClickListener {
+                if (authViewModel.authorized) {
+                    findNavController().navigate(R.id.action_eventsListFragment_to_createEventFragment)
+                } else {
+                    context?.let { it1 ->
+                        MaterialAlertDialogBuilder(
+                            it1,
+                            R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
+                        )
+                            .setMessage(resources.getString(R.string.alert_dialog))
+                            .setNegativeButton(resources.getString(R.string.sign_in_button)) { _, _ ->
+                                findNavController().navigate(R.id.action_eventsListFragment_to_signInFragment)
+                            }
+                            .setNeutralButton(resources.getString(R.string.sign_up)) { _, _ ->
+                                findNavController().navigate(R.id.action_eventsListFragment_to_signUpFragment)
+                            }
+                            .show()
+                    }
+                }
             }
+
+            menuProvider?.let(requireActivity()::removeMenuProvider)
+
+            requireActivity().addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.menu_auth, menu)
+
+                    menu.setGroupVisible(R.id.authorized, authViewModel.authorized)
+                    menu.setGroupVisible(R.id.unauthorized, !authViewModel.authorized)
+
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
+                        R.id.logout -> {
+                            appAuth.removeAuth()
+                            true
+                        }
+                        R.id.signIn -> {
+                            findNavController().navigate(R.id.action_eventsListFragment_to_signInFragment)
+                            true
+                        }
+                        R.id.signUp -> {
+                            findNavController().navigate(R.id.action_eventsListFragment_to_signUpFragment)
+                            true
+                        }
+                        else -> false
+                    }
+            }.apply {
+                menuProvider = this
+            }, viewLifecycleOwner)
         }
+
 
         return binding.root
     }

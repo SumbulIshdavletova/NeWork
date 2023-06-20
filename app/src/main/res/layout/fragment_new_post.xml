@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_create_new_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".events.ui.CreateEventFragment">
+    android:id="@+id/fragment_container_view_image"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".posts.ui.NewPostFragment">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -89,5 +89,7 @@
             android:padding="@dimen/common_spacing"
             app:icon="@drawable/ic_camera_alt_24" />
     </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

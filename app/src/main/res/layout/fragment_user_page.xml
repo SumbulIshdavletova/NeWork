@@ -56,16 +56,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header" />
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/job_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/header_wall"
+            app:layout_constraintBottom_toTopOf="@id/add_job"
             app:layout_constraintTop_toBottomOf="@id/header"
             tools:listitem="@layout/job_card" />
         <!--        app:layout_constraintBottom_toTopOf="@id/header_wall"-->
 
+
+        <Button
+            android:id="@+id/add_job"
+            style="@style/Widget.AppTheme.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_add_24"
+            app:layout_constraintBottom_toTopOf="@id/header_wall"
+            app:layout_constraintTop_toBottomOf="@id/emptyJob"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/header_wall"
@@ -76,6 +88,16 @@
             app:constraint_referenced_ids="job_list" />
 
         <TextView
+            android:id="@+id/wall_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wall"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/common_spacing"
+            app:layout_constraintTop_toBottomOf="@id/header_wall"/>
+
+        <TextView
             android:id="@+id/emptyWall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,16 +106,27 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_wall" />
+            app:layout_constraintTop_toBottomOf="@id/wall_title" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/wall_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_wall"
             tools:listitem="@layout/post_card" />
+
+        <Button
+            android:id="@+id/add_post"
+            style="@style/Widget.AppTheme.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_add_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/emptyWall"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

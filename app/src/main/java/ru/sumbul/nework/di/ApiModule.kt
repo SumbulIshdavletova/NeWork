@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.sumbul.nework.BuildConfig
+import ru.sumbul.nework.auth.data.remote.AuthApi
 import ru.sumbul.nework.events.data.remote.EventsApi
 import ru.sumbul.nework.posts.data.remote.PostApi
 import ru.sumbul.nework.user_page.data.remote.UserPageApi
@@ -74,4 +75,8 @@ class ApiModule {
     @Singleton
     @Provides
     fun providesPageUserApi(retrofit: Retrofit): UserPageApi = retrofit.create()
+
+    @Singleton
+    @Provides
+    fun providesAuthApi(retrofit: Retrofit): AuthApi = retrofit.create()
 }

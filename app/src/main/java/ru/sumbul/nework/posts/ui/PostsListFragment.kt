@@ -1,12 +1,12 @@
 package ru.sumbul.nework.posts.ui
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -17,20 +17,26 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.sumbul.nework.R
+import ru.sumbul.nework.auth.data.AppAuth
+import ru.sumbul.nework.auth.ui.AuthViewModel
 import ru.sumbul.nework.databinding.FragmentPostsListBinding
 import ru.sumbul.nework.events.domain.model.EventResponse
 import ru.sumbul.nework.events.ui.EventFragment.Companion.textArg
 import ru.sumbul.nework.events.ui.adapter.EventsAdapter
 import ru.sumbul.nework.events.ui.adapter.OnInteractionListener
 import ru.sumbul.nework.posts.domain.model.PostResponse
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class PostsListFragment : Fragment() {
 
+    @Inject
+    lateinit var appAuth: AppAuth
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val viewModel: PostViewModel by activityViewModels()
+    val authViewModel: AuthViewModel by viewModels()
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         PostsAdapter(object : PostOnInteractionListener {
@@ -84,20 +90,58 @@ class PostsListFragment : Fragment() {
         }
 
 
-        binding.fab.setOnClickListener {
-            context?.let { it1 ->
-                MaterialAlertDialogBuilder(
-                    it1,
-                    R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
-                )
-                    .setMessage(resources.getString(R.string.alert_dialog))
-//                            .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
-//                                findNavController().navigate(R.id.action_feedFragment_to_singInFragment)
-//                            }
-                    .show()
-            }
-        }
+        var menuProvider: MenuProvider? = null
+        authViewModel.data.observe(viewLifecycleOwner) {
 
+            binding.fab.setOnClickListener {
+                if (authViewModel.authorized) {
+                    findNavController().navigate(R.id.action_postsListFragment_to_newPostFragment)
+                } else {
+                    context?.let { it1 ->
+                        MaterialAlertDialogBuilder(
+                            it1,
+                            R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
+                        )
+                            .setMessage(resources.getString(R.string.alert_dialog))
+                            .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
+                                findNavController().navigate(R.id.action_postsListFragment_to_signInFragment)
+                            }
+                            .show()
+                    }
+                }
+            }
+
+            menuProvider?.let(requireActivity()::removeMenuProvider)
+
+            requireActivity().addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.menu_auth, menu)
+
+                    menu.setGroupVisible(R.id.authorized, authViewModel.authorized)
+                    menu.setGroupVisible(R.id.unauthorized, !authViewModel.authorized)
+
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
+                        R.id.logout -> {
+                            appAuth.removeAuth()
+                            true
+                        }
+                        R.id.signIn -> {
+                            findNavController().navigate(R.id.action_postsListFragment_to_signInFragment)
+                            true
+                        }
+                        R.id.signUp -> {
+                            findNavController().navigate(R.id.action_postsListFragment_to_signUpFragment)
+                            true
+                        }
+                        else -> false
+                    }
+            }.apply {
+                menuProvider = this
+            }, viewLifecycleOwner)
+        }
 
         return binding.root
     }

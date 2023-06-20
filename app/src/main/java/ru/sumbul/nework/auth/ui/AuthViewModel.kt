@@ -30,14 +30,14 @@ class AuthViewModel @Inject constructor(
 //        MutableLiveData<Boolean>()
 //    }
 //
-    val isAuthorized: Boolean
+    val authorized: Boolean
         get() = appAuth.state.value?.id?.toLong() != 0L
 
 
     val state = appAuth.state
         .asLiveData()
-    val authorized: Boolean
-        get() = state.value != null
+//    val authorized: Boolean
+//        get() = state.value != null
 
     private val _photo = MutableLiveData(noPhoto)
     val photo: LiveData<PhotoModel>
