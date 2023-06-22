@@ -38,6 +38,7 @@ class PostsListFragment : Fragment() {
     private val viewModel: PostViewModel by activityViewModels()
     val authViewModel: AuthViewModel by viewModels()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         PostsAdapter(object : PostOnInteractionListener {
             override fun onClick(post: PostResponse) {

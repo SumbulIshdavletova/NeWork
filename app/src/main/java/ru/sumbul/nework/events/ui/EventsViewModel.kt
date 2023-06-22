@@ -14,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import ru.sumbul.nework.events.data.EventMapper
 import ru.sumbul.nework.events.data.entity.Type
 import ru.sumbul.nework.events.domain.EventsRepository
 import ru.sumbul.nework.events.domain.model.*
@@ -25,11 +26,11 @@ import javax.inject.Inject
 private val empty = EventCreate(
     id = 0,
     content = "",
-    "",
-    Coordinates("", ""),
+    "2023-06-21T14:48:15.559Z",
+    Coordinates("127.024612", "127.047325"),
     type = null,
     attachment = null,
-    "", ArrayList<Int>()
+    "", emptyList()
 )
 
 data class PhotoModel(
@@ -43,32 +44,18 @@ private val noPhoto = PhotoModel(null, null)
 @ExperimentalCoroutinesApi
 class EventsViewModel @Inject constructor(
     private val repository: EventsRepository,
+    private val mapper: EventMapper,
 ) : ViewModel() {
 
     private val cached = repository
         .data
         .cachedIn(viewModelScope)
 
-
     val data: Flow<PagingData<EventResponse>> = cached
-
-    private val _photo = MutableLiveData(noPhoto)
-    val photo: LiveData<PhotoModel>
-        get() = _photo
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
-
-    private val edited = MutableLiveData(empty)
-    private val _postCreated = SingleLiveEvent<Unit>()
-    val postCreated: LiveData<Unit>
-        get() = _postCreated
-
-    init {
-        loadPosts()
-    }
-
 
     private val getEvent = MutableLiveData<EventResponse>()
 
@@ -106,6 +93,15 @@ class EventsViewModel @Inject constructor(
         }
     }
 
+    private val _photo = MutableLiveData(noPhoto)
+    val photo: LiveData<PhotoModel>
+        get() = _photo
+
+    private val edited = MutableLiveData(empty)
+    private val _postCreated = SingleLiveEvent<Unit>()
+    val postCreated: LiveData<Unit>
+        get() = _postCreated
+
     fun save() {
         edited.value?.let {
             _postCreated.value = Unit
@@ -128,8 +124,8 @@ class EventsViewModel @Inject constructor(
         _photo.value = noPhoto
     }
 
-    fun edit(eventCreate: EventCreate) {
-        edited.value = eventCreate
+    fun edit(eventCreate: EventResponse) {
+        edited.value = mapper.mapResponseToCreate(eventCreate)
     }
 
     fun changeContent(content: String) {
@@ -139,6 +135,25 @@ class EventsViewModel @Inject constructor(
         }
         edited.value = edited.value?.copy(content = text)
     }
+
+    fun removeById(id: Long) = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(loading = true)
+            repository.removeById(id)
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(removeError = true)
+        }
+    }
+
+    fun changePhoto(uri: Uri?, file: File?) {
+        _photo.value = PhotoModel(uri, file)
+    }
+
+    fun deletePhoto() {
+        _photo.value = noPhoto
+    }
+
 
     fun likeById(id: Long) = viewModelScope.launch {
         try {
@@ -160,22 +175,5 @@ class EventsViewModel @Inject constructor(
         }
     }
 
-    fun removeById(id: Long) = viewModelScope.launch {
-        try {
-            _dataState.value = FeedModelState(loading = true)
-            repository.removeById(id)
-            _dataState.value = FeedModelState()
-        } catch (e: Exception) {
-            _dataState.value = FeedModelState(removeError = true)
-        }
-    }
-
-    fun changePhoto(uri: Uri?, file: File?) {
-        _photo.value = PhotoModel(uri, file)
-    }
-
-    fun deletePhoto() {
-        _photo.value = noPhoto
-    }
 
 }

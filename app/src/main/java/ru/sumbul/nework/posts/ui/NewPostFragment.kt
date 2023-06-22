@@ -60,7 +60,6 @@ class NewPostFragment : Fragment() {
                 }
             }
 
-
         viewModel.postCreated.observe(viewLifecycleOwner) {
             findNavController().navigateUp()
         }

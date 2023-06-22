@@ -2,9 +2,12 @@ package ru.sumbul.nework.events.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ru.sumbul.nework.R
 import ru.sumbul.nework.databinding.EventCardBinding
 import ru.sumbul.nework.events.domain.model.EventResponse
 import ru.sumbul.nework.posts.domain.model.PostResponse
@@ -15,7 +18,7 @@ interface OnInteractionListener {
     fun onClick(event: EventResponse) {}
     fun onAuthor(event: EventResponse) {}
     fun onLike(event: EventResponse) {}
-    //  fun onDeleteLike(event: EventResponse)
+    fun onDeleteLike(event: EventResponse)
     fun onEdit(event: EventResponse) {}
     fun onRemove(event: EventResponse) {}
 }
@@ -62,6 +65,38 @@ class EventViewHolder(
         binding.avatar.setOnClickListener {
             onInteractionListener.onAuthor(event)
         }
+
+        binding.menu.isVisible = event.ownedByMe
+        binding.menu.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.options_menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.remove -> {
+                            onInteractionListener.onRemove(event)
+                            true
+                        }
+                        R.id.edit -> {
+                            onInteractionListener.onEdit(event)
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+            }.show()
+        }
+
+        if (event.likedByMe) {
+            binding.like.setOnClickListener {
+                onInteractionListener.onDeleteLike(event)
+            }
+        } else {
+            binding.like.setOnClickListener {
+                onInteractionListener.onLike(event)
+            }
+        }
+
 
     }
 }

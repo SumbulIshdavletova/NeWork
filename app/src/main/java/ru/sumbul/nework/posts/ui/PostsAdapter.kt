@@ -79,6 +79,8 @@ class PostViewHolder(
                 .into(binding.attachment)
         }
 
+        post.attachment?.url?.let { binding.attachment.load(it) }
+
         binding.menu.isVisible = post.ownedByMe
         binding.menu.setOnClickListener {
             PopupMenu(it.context, it).apply {

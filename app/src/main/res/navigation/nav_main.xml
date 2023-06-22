@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_eventFragment_to_userPageFragment"
             app:destination="@id/userPageFragment" />
+        <action
+            android:id="@+id/action_eventFragment_to_createEventFragment"
+            app:destination="@id/createEventFragment" />
     </fragment>
 
 

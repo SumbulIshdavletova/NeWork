@@ -37,6 +37,7 @@ class EventsListFragment : Fragment() {
     private val viewModel: EventsViewModel by activityViewModels()
     val authViewModel: AuthViewModel by viewModels()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         EventsAdapter(object : OnInteractionListener {
             override fun onClick(event: EventResponse) {
@@ -53,6 +54,42 @@ class EventsListFragment : Fragment() {
                     Bundle().apply {
                         textArg = event.id.toString()
                     })
+            }
+
+            override fun onDeleteLike(event: EventResponse) {
+                viewModel.unlikeById(event.id.toLong())
+            }
+
+            override fun onLike(event: EventResponse) {
+                if (authViewModel.authorized) {
+                    viewModel.likeById(event.id.toLong())
+                } else {
+                    context?.let { it1 ->
+                        MaterialAlertDialogBuilder(
+                            it1,
+                            R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
+                        )
+                            .setMessage(resources.getString(R.string.alert_dialog))
+                            .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
+                                findNavController().navigate(R.id.action_eventsListFragment_to_signInFragment)
+                            }
+                            .show()
+                    }
+                }
+            }
+
+            override fun onEdit(event: EventResponse) {
+                viewModel.edit(event)
+                findNavController().navigate(
+                    R.id.action_eventsListFragment_to_createEventFragment,
+                    Bundle().apply {
+                        textArg = event.content
+                    }
+                )
+            }
+
+            override fun onRemove(event: EventResponse) {
+                viewModel.removeById(event.id.toLong())
             }
         })
     }

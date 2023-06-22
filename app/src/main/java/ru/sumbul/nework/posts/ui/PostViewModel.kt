@@ -38,14 +38,12 @@ data class PhotoModel(
 
 private val noPhoto = PhotoModel(null, null)
 
-
 @HiltViewModel
 @ExperimentalCoroutinesApi
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     private val mapper: Mapper,
 ) : ViewModel() {
-
 
     private val cached = repository
         .data
