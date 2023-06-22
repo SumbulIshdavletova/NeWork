@@ -16,7 +16,7 @@ data class PostResponse(
     val content: String,
     val published: String,
 //($date-time)
-    val coords: PostCoordinates?,
+   val coords: PostCoordinates?,
     val link: String?,
     @field:TypeConverters(IntListTypeConverter::class)
     val likeOwnerIds: List<Int>?,
@@ -31,8 +31,8 @@ data class PostResponse(
 )
 
 data class PostCoordinates(
-    val lat: String,
-    val longitude: String,
+    val lat: String?,
+    val long: String?,
 )
 
 data class PostAttachment(

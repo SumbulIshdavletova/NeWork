@@ -29,7 +29,7 @@ data class PostCreateRequestEntity(
     fun toDto() = PostCreate(
         id,
         content,
-        coords?.toDto(),
+         coords?.toDto(),
         link, attachment?.toDto(),mentionIds
     )
 

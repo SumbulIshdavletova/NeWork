@@ -55,6 +55,42 @@ class PostsListFragment : Fragment() {
                         textArg = post.id.toString()
                     })
             }
+
+            override fun onEdit(post: PostResponse) {
+               viewModel.edit(post)
+                findNavController().navigate(
+                    R.id.action_postsListFragment_to_newPostFragment,
+                    Bundle().apply {
+                        textArg = post.content
+                    }
+                )
+            }
+
+            override fun onLike(post: PostResponse) {
+                if (authViewModel.authorized) {
+                    viewModel.likeById(post.id.toLong())
+                } else {
+                    context?.let { it1 ->
+                        MaterialAlertDialogBuilder(
+                            it1,
+                            R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
+                        )
+                            .setMessage(resources.getString(R.string.alert_dialog))
+                            .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
+                                findNavController().navigate(R.id.action_postsListFragment_to_signInFragment)
+                            }
+                            .show()
+                    }
+                }
+            }
+
+            override fun onDeleteLike(post: PostResponse) {
+                viewModel.unlikeById(post.id.toLong())
+            }
+
+            override fun onRemove(post: PostResponse) {
+                viewModel.removeById(post.id.toLong())
+            }
         })
     }
 
@@ -105,6 +141,9 @@ class PostsListFragment : Fragment() {
                             .setMessage(resources.getString(R.string.alert_dialog))
                             .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
                                 findNavController().navigate(R.id.action_postsListFragment_to_signInFragment)
+                            }
+                            .setNegativeButton(resources.getString(R.string.sign_up)) { _, _ ->
+                                findNavController().navigate(R.id.action_postsListFragment_to_signUpFragment)
                             }
                             .show()
                     }

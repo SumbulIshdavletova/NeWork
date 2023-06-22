@@ -28,7 +28,7 @@ data class PostResponseEntity(
     val published: String,
 //($date-time)
     @Embedded
-    val coords: PostCoordinatesEmbeddable?,
+   val coords: PostCoordinatesEmbeddable?,
     val link: String?,
     @field:TypeConverters(IntListTypeConverter::class)
     val likeOwnerIds: List<Int>?,
@@ -50,7 +50,7 @@ data class PostResponseEntity(
         authorJob,
         content,
         published,
-        coords?.toDto(),
+       coords?.toDto(),
         link,
         likeOwnerIds,
         mentionIds,
@@ -71,7 +71,7 @@ data class PostResponseEntity(
                 dto.authorJob,
                 dto.content,
                 dto.published,
-                PostCoordinatesEmbeddable.fromDto(dto.coords),
+              PostCoordinatesEmbeddable.fromDto(dto.coords),
                 dto.link,
                 dto.likeOwnerIds,
                 dto.mentionIds,
@@ -93,7 +93,7 @@ data class PostCoordinatesEmbeddable(
 
     companion object {
         fun fromDto(dto: PostCoordinates?) = dto?.let {
-            PostCoordinatesEmbeddable(it.lat, it.longitude)
+            it.lat?.let { it1 -> it.long?.let { it2 -> PostCoordinatesEmbeddable(it1, it2) } }
         }
     }
 }

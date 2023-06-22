@@ -13,13 +13,13 @@ interface PostRepository {
     val data: Flow<PagingData<PostResponse>>
     suspend fun getAll()
     fun getNewerCount(id: Long): Flow<Int>
-    suspend fun save(event: PostCreate)
+    suspend fun save(post: PostCreate)
     suspend fun getPostById(id: Long) : PostResponse
 
     suspend fun removeById(id: Long)
     suspend fun likeById(id: Long)
     suspend fun unlikeById(id: Long)
-    suspend fun saveWithAttachment(event: PostCreate, file: File)
+    suspend fun saveWithAttachment(post: PostCreate, file: File)
     suspend fun update()
     suspend fun upload(file: File): Media
 }

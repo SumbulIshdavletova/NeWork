@@ -2,15 +2,21 @@ package ru.sumbul.nework.user_page.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.sumbul.nework.R
 import ru.sumbul.nework.databinding.JobCardBinding
 import ru.sumbul.nework.user_page.domain.model.Job
+import ru.sumbul.nework.user_page.domain.model.WallPosts
 
 
 interface JobOnInteractionListener {
     fun onClick(job: Job) {}
+    fun onEdit(job: Job) {}
+    fun onRemove(job: Job) {}
 }
 
 class JobAdapter(
@@ -47,7 +53,26 @@ class JobViewHolder(
             itemView.setOnClickListener {
                 onInteractionListener.onClick(job)
             }
-            //TODO MENU
+
+            binding.menu.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.options_menu)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.remove -> {
+                                onInteractionListener.onRemove(job)
+                                true
+                            }
+                            R.id.edit -> {
+                                onInteractionListener.onEdit(job)
+                                true
+                            }
+
+                            else -> false
+                        }
+                    }
+                }.show()
+            }
         }
     }
 }

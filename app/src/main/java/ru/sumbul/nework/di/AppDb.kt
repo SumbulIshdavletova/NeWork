@@ -25,7 +25,7 @@ import ru.sumbul.nework.user_page.domain.model.UserResponse
         PostResponseEntity::class, PostRemoteKeyEntity::class, PostCreateRequestEntity::class,
         JobEntity::class, UserResponseEntity::class,
         WallPostRemoteKeyEntity::class, WallPostsEntity::class],
-    version = 8,
+    version = 1,
     exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {

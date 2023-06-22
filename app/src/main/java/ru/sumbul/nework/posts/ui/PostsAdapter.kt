@@ -1,10 +1,15 @@
 package ru.sumbul.nework.posts.ui
 
+import android.system.Os.remove
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import ru.sumbul.nework.R
 import ru.sumbul.nework.databinding.PostCardBinding
 import ru.sumbul.nework.posts.domain.model.PostResponse
 import ru.sumbul.nework.util.load
@@ -13,10 +18,10 @@ interface PostOnInteractionListener {
     fun onClick(post: PostResponse) {}
     fun onAuthor(post: PostResponse) {}
     fun onLike(post: PostResponse) {}
-
-    //  fun onDeleteLike(post: PostResponse)
     fun onEdit(post: PostResponse) {}
     fun onRemove(post: PostResponse) {}
+    fun onDeleteLike(post: PostResponse)
+
 }
 
 class PostsAdapter(
@@ -62,6 +67,50 @@ class PostViewHolder(
         binding.avatar.setOnClickListener {
             onInteractionListener.onAuthor(post)
         }
+
+        if (post.attachment?.url != null) {
+            binding.attachment.isVisible = true
+            val url = "https://netomedia.ru/api/media/${post.attachment.url}"
+            Glide.with(binding.attachment)
+                .load(url)
+                .placeholder(R.drawable.ic_baseline_rotate_right_24)
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .timeout(10_000)
+                .into(binding.attachment)
+        }
+
+        binding.menu.isVisible = post.ownedByMe
+        binding.menu.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.options_menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.remove -> {
+                            onInteractionListener.onRemove(post)
+                            true
+                        }
+                        R.id.edit -> {
+                            onInteractionListener.onEdit(post)
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+            }.show()
+        }
+
+        if (post.likedByMe) {
+            binding.like.setOnClickListener {
+                onInteractionListener.onDeleteLike(post)
+            }
+        } else {
+            binding.like.setOnClickListener {
+                  onInteractionListener.onLike(post)
+            }
+        }
+
+
     }
 }
 

@@ -62,6 +62,7 @@ class EventViewHolder(
         binding.avatar.setOnClickListener {
             onInteractionListener.onAuthor(event)
         }
+
     }
 }
 

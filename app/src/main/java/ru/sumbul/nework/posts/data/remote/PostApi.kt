@@ -12,7 +12,7 @@ interface PostApi {
     suspend fun getPosts(): Response<List<PostResponse>>
 
     @POST("posts/")
-    suspend fun save(@Body event: PostCreate): Response<PostCreate>
+    suspend fun save(@Body post: PostCreate): Response<PostCreate>
 
     @GET("posts/latest")
     suspend fun getPostsLatest(@Query("count") count: Int): Response<List<PostResponse>>
@@ -46,7 +46,7 @@ interface PostApi {
     suspend fun getNewer(@Path("id") id: Long): Response<List<PostResponse>>
 
     @Multipart
-    @POST("media")
+    @POST("media/")
     suspend fun upload(@Part file: MultipartBody.Part): Response<Media>
 
 

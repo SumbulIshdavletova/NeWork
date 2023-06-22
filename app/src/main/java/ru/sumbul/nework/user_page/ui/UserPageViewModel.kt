@@ -27,17 +27,35 @@ class UserPageViewModel @Inject constructor(
         return jobs
     }
 
-    //    private val _dataState = MutableLiveData<ListModelState>()
-//    val dataState: LiveData<ListModelState>
-//        get() = _dataState
-//
     fun getJobs(id: Long) {
         viewModelScope.launch {
             repository.getJobs(id)
         }
     }
 
+    private val myJobs: MutableLiveData<List<Job>?>? = repository.getMyJobsLiveData()
 
+    fun getMyJobsLiveData(): MutableLiveData<List<Job>?>? {
+        return myJobs
+    }
+
+    fun getMyJobs() {
+        viewModelScope.launch {
+            repository.getMyJobs()
+        }
+    }
+
+    fun saveJob(job: Job) {
+        viewModelScope.launch {
+            repository.save(job)
+        }
+    }
+
+    fun removeJobById(id: Long) {
+        viewModelScope.launch {
+            repository.deleteJobById(id)
+        }
+    }
 
     private val wall: MutableLiveData<List<WallPosts>?>? = repository.getAllUsersWall()
 
@@ -55,7 +73,16 @@ class UserPageViewModel @Inject constructor(
         }
     }
 
+    private val myWall: MutableLiveData<List<WallPosts>?>? = repository.getMyWallLiveData()
 
+    fun getMyWallLiveData(): MutableLiveData<List<WallPosts>?>? {
+        return myWall
+    }
+    fun getMyWall() {
+        viewModelScope.launch {
+            repository.getMyWall()
+        }
+    }
 
     private val getUser = MutableLiveData<UserResponse>()
 

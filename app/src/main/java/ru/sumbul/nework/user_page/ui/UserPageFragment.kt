@@ -1,14 +1,18 @@
 package ru.sumbul.nework.user_page.ui
 
+import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.transition.Visibility
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -38,13 +42,18 @@ class UserPageFragment : Fragment() {
         var Bundle.textArg: String? by StringArg
     }
 
+
+
     @Inject
     lateinit var appAuth: AppAuth
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val viewModel: UserPageViewModel by activityViewModels()
     val authViewModel: AuthViewModel by viewModels()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val postViewModel: PostViewModel by viewModels()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val jobAdapter by lazy(LazyThreadSafetyMode.NONE) {
         JobAdapter(object : JobOnInteractionListener {
             override fun onClick(job: ru.sumbul.nework.user_page.domain.model.Job) {
@@ -54,17 +63,66 @@ class UserPageFragment : Fragment() {
                         textArg = job.id.toString()
                     })
             }
+            override fun onRemove(job: ru.sumbul.nework.user_page.domain.model.Job) {
+                viewModel.removeJobById(job.id.toLong())
+            }
+
+            override fun onEdit(job: ru.sumbul.nework.user_page.domain.model.Job) {
+                //  postViewModel.edit(post)
+//                findNavController().navigate(
+//                    R.id.action_userPageFragment_to_newPostFragment,
+//                    Bundle().apply {
+//                        textArg = job.content
+//                    }
+//                )
+            }
         })
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val postAdapter by lazy(LazyThreadSafetyMode.NONE) {
         WallPostsAdapter(object : WallPostsOnInteractionListener {
             override fun onClick(post: WallPosts) {
                 findNavController().navigate(
-                    R.id.action_postsListFragment_to_postFragment,
+                    R.id.action_userPageFragment_to_postFragment,
                     Bundle().apply {
                         textArg = post.id.toString()
                     })
+            }
+            override fun onEdit(post: WallPosts) {
+              //  postViewModel.edit(post)
+                findNavController().navigate(
+                    R.id.action_userPageFragment_to_newPostFragment,
+                    Bundle().apply {
+                        textArg = post.content
+                    }
+                )
+            }
+
+            override fun onLike(post: WallPosts) {
+                if (authViewModel.authorized) {
+                    postViewModel.likeById(post.id.toLong())
+                } else {
+                    context?.let { it1 ->
+                        MaterialAlertDialogBuilder(
+                            it1,
+                            R.style.ThemeOverlay_MaterialComponents_Dialog_Alert
+                        )
+                            .setMessage(resources.getString(R.string.alert_dialog))
+                            .setNeutralButton(resources.getString(R.string.sign_in_button)) { _, _ ->
+                                findNavController().navigate(R.id.action_postsListFragment_to_signInFragment)
+                            }
+                            .show()
+                    }
+                }
+            }
+
+            override fun onDeleteLike(post: WallPosts) {
+                postViewModel.unlikeById(post.id.toLong())
+            }
+
+            override fun onRemove(post: WallPosts) {
+                postViewModel.removeById(post.id.toLong())
             }
         })
     }
@@ -112,6 +170,7 @@ class UserPageFragment : Fragment() {
         } else {
             authViewModel.data.observe(viewLifecycleOwner) {
                 if (authViewModel.authorized) {
+                    binding.addJob.visibility = View.VISIBLE
                     val id = appAuth.state.value?.id?.toLong()
 
                     if (id != null) {
@@ -120,7 +179,7 @@ class UserPageFragment : Fragment() {
                     viewModel.userLiveDataTransformed()?.observe(viewLifecycleOwner) { user ->
                         //  arguments?.textArg?.toLong()?.let { viewModel.getUserById(it) }
                         binding.id.text = user.id.toString()
-                        user.avatar?.let { binding.avatar.load(it) }
+                        user.avatar?.let { binding.avatar.load(user.avatar) }
                         Glide.with(this)
                             .load(user.avatar)
                             .timeout(10_000)
@@ -130,26 +189,29 @@ class UserPageFragment : Fragment() {
                         binding.name.text = user.name
                     }
 
-                    id?.let {
-                        viewModel.getJobs(it)
-                        viewModel.getJobs()?.observe(viewLifecycleOwner) { job ->
-                            jobAdapter.submitList(job)
-                        }
+                    viewModel.getMyJobs()
+                    viewModel.getMyJobsLiveData()?.observe(viewLifecycleOwner) { job ->
+                        jobAdapter.submitList(job)
                     }
 
-                    id?.let {
-                        viewModel.getWall(it)
-                        viewModel.getWall()?.observe(viewLifecycleOwner) { posts ->
-                            postAdapter.submitList(posts)
-                        }
+                    viewModel.getMyWall()
+                    viewModel.getMyWallLiveData()?.observe(viewLifecycleOwner) { posts ->
+                        postAdapter.submitList(posts)
                     }
 
                     binding.addJob.setOnClickListener {
-                        //   findNavController().navigate()
+                        findNavController().navigate(R.id.action_userPageFragment_to_newJobFragment)
+                    }
+
+                    binding.addPost.setOnClickListener {
+                        findNavController().navigate(R.id.action_userPageFragment_to_newPostFragment)
                     }
 
                 } else {
-                    //TO DO запись что рег или войти
+                    val myDialogFragment = NoProfile()
+                    val manager = childFragmentManager
+                    val transaction: FragmentTransaction = manager.beginTransaction()
+                    myDialogFragment.show(transaction, "dialog")
                 }
             }
         }

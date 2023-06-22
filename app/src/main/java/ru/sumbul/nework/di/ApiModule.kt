@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.sumbul.nework.BuildConfig
+import ru.sumbul.nework.auth.data.AppAuth
 import ru.sumbul.nework.auth.data.remote.AuthApi
 import ru.sumbul.nework.events.data.remote.EventsApi
 import ru.sumbul.nework.posts.data.remote.PostApi
@@ -38,19 +39,19 @@ class ApiModule {
     @Provides
     fun provideOkHttp(
         logging: HttpLoggingInterceptor,
-        //appAuth: AppAuth
+        appAuth: AppAuth
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
-//        .addInterceptor { chain ->
-//            appAuth.state.value?.token?.let { token ->
-//                val request = chain.request()
-//                    .newBuilder()
-//                    .addHeader("Authorization", token)
-//                    .build()
-//                return@addInterceptor chain.proceed(request)
-//            }
-//            chain.proceed(chain.request())
-//        }
+        .addInterceptor { chain ->
+            appAuth.state.value?.token?.let { token ->
+                val request = chain.request()
+                    .newBuilder()
+                    .addHeader("Authorization", token)
+                    .build()
+                return@addInterceptor chain.proceed(request)
+            }
+            chain.proceed(chain.request())
+        }
         .build()
 
     @Singleton

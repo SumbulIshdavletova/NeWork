@@ -79,12 +79,31 @@
         <action
             android:id="@+id/action_postFragment_to_userPageFragment"
             app:destination="@id/userPageFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
     </fragment>
     <fragment
         android:id="@+id/userPageFragment"
         android:name="ru.sumbul.nework.user_page.ui.UserPageFragment"
         android:label="fragment_user_page"
-        tools:layout="@layout/fragment_user_page" />
+        tools:layout="@layout/fragment_user_page" >
+        <action
+            android:id="@+id/action_userPageFragment_to_newJobFragment"
+            app:destination="@id/newJobFragment" />
+        <action
+            android:id="@+id/action_userPageFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_userPageFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_userPageFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_userPageFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newPostFragment"
         android:name="ru.sumbul.nework.posts.ui.NewPostFragment"
@@ -100,5 +119,21 @@
         android:name="ru.sumbul.nework.auth.ui.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" />
+    <fragment
+        android:id="@+id/newJobFragment"
+        android:name="ru.sumbul.nework.user_page.ui.NewJobFragment"
+        android:label="fragment_new_job"
+        tools:layout="@layout/fragment_new_job" />
+    <dialog
+        android:id="@+id/noProfile"
+        android:name="ru.sumbul.nework.user_page.ui.NoProfile"
+        android:label="NoProfile" >
+        <action
+            android:id="@+id/action_noProfile_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_noProfile_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </dialog>
 
 </navigation>

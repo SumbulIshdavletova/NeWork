@@ -52,5 +52,12 @@
     <string name="no_job_yet">The user hasn\'t added any job yet.</string>
     <string name="no_posts_yet">The user doesn\'t have any posts yet</string>
     <string name="wall">Wall</string>
+    <string name="start">start</string>
+    <string name="finish">finish</string>
+    <string name="organization">Organization</string>
+    <string name="position">Position</string>
+    <string name="link">Link</string>
+    <string name="number">Number</string>
+    <string name="id">id</string>
 
 </resources>
